@@ -41,15 +41,15 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
   void setupGame() {
     setState(() {
-      gameImages = [...imagePaths, ...imagePaths]; // Duplicate images
-      gameImages.shuffle(Random()); // Shuffle images
-      flippedCards = List.generate(gameImages.length, (index) => false); // Hide all initially
+      gameImages = [...imagePaths, ...imagePaths];
+      gameImages.shuffle(Random());
+      flippedCards = List.generate(gameImages.length, (index) => false);
     });
   }
 
   void flipCard(int index) {
     setState(() {
-      flippedCards[index] = !flippedCards[index]; // Toggle flip state
+      flippedCards[index] = !flippedCards[index];
     });
   }
 
@@ -80,9 +80,9 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
           padding: const EdgeInsets.all(8.0),
           child: GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4, // 3 columns
-              crossAxisSpacing: 10, // Space between columns
-              mainAxisSpacing: 10, // Space between rows
+              crossAxisCount: 4,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
             ),
             itemCount: gameImages.length,
             itemBuilder: (context, index) {
@@ -95,10 +95,10 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
                   child: flippedCards[index]
                       ? Image.asset(
                     gameImages[index],
-                    fit: BoxFit.cover, // Makes image fit nicely
+                    fit: BoxFit.cover,
                   )
                       : Container(
-                    color: Colors.blue, // Placeholder for hidden image
+                    color: Colors.blue,
                     child: const Center(child: Text("Tap to flip",
                       style: TextStyle(color: Colors.white),)),
                   ),
