@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class WonGameScreen extends StatefulWidget {
    final String userName;
 
-   WonGameScreen ({super.key, required String this.userName});
+   const WonGameScreen ({super.key, required String this.userName});
 
 
   @override
