@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'cat_api_service.dart';
@@ -24,7 +23,8 @@ class _CatPhotosState extends State<CatPhotos> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue[200],
+        backgroundColor: Colors.pink[300],
+        foregroundColor: Colors.white,
         title: Text('Cat Photos'),
       ),
       body: Column(
@@ -58,12 +58,17 @@ class _CatPhotosState extends State<CatPhotos> {
         ],
       ),
       bottomNavigationBar: BottomAppBar(
+        color: Colors.blue,
         child: Row(
           children: [
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
               },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.pink,
+                foregroundColor: Colors.white
+              ),
               child: Text('Memory Game'),
             ),
           ],

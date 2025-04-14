@@ -1,8 +1,7 @@
-
 import 'dart:math';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:memory_game1/cat_photos_screen.dart';
+import 'package:memory_game1/won_game_screen.dart';
 
 class MemoryGameScreen extends StatefulWidget {
   const MemoryGameScreen({super.key});
@@ -29,7 +28,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
     "assets/images/witch.jpg"
   ];
 
-  List<String> gameImages = [];
+  List<String> currentCards = [];
   List<bool> flippedCards = [];
   int matchesFound = 0;
   List<int> flippedIndexes = [];
@@ -38,14 +37,26 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
   int _difficulty = 1; // Default: Medium
   int _gridSize = 4; // Default grid size
 
+
+
+  late TextEditingController textController;
+  String savedUserName = '';
+
   void _setDifficulty(int value) {
     setState(() {
       _difficulty = value;
       switch (_difficulty) {
-        case 0: _gridSize = 3; break; // Easy
-        case 1: _gridSize = 4; break; // Medium
-        case 2: _gridSize = 5; break; // Hard
-        default: _gridSize = 4;
+        case 0:
+          _gridSize = 3;
+          break; // Easy
+        case 1:
+          _gridSize = 4;
+          break; // Medium
+        case 2:
+          _gridSize = 5;
+          break; // Hard
+        default:
+          _gridSize = 4;
       }
       setupGame();
     });
@@ -54,17 +65,30 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
   @override
   void initState() {
     super.initState();
+
+    // Wait until the first frame is rendered before showing the modal
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showLoginModal();
+    });
+
+    savedUserName = '';
+    textController = TextEditingController();
+    super.initState();
     setupGame();
+
+
   }
 
   void setupGame() {
-    int numPairs = (_gridSize * _gridSize) ~/ 2; // Adjust pairs to match grid size
-    List<String> selectedImages = imagePaths.sublist(0, numPairs); // Limit images
-    gameImages = [...selectedImages, ...selectedImages]; // Create pairs
-    gameImages.shuffle(Random());
+    int numPairs = (_gridSize * _gridSize) ~/
+        2; // Adjust pairs to match grid size
+    List<String> selectedImages = imagePaths.sublist(
+        0, numPairs); // Limit images
+    currentCards = [...selectedImages, ...selectedImages]; // Create pairs
+    currentCards.shuffle(Random());
 
     setState(() {
-      flippedCards = List.generate(gameImages.length, (index) => false);
+      flippedCards = List.generate(currentCards.length, (index) => false);
       matchesFound = 0;
       flippedIndexes.clear();
     });
@@ -91,7 +115,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
       int firstIndex = flippedIndexes[0];
       int secondIndex = flippedIndexes[1];
 
-      if (gameImages[firstIndex] != gameImages[secondIndex]) {
+      if (currentCards[firstIndex] != currentCards[secondIndex]) {
         setState(() {
           flippedCards[firstIndex] = false;
           flippedCards[secondIndex] = false;
@@ -100,6 +124,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
         setState(() {
           matchesFound++;
         });
+        checkForWin();
       }
     }
 
@@ -107,16 +132,63 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
     isChecking = false;
   }
 
+  void checkForWin() {
+    if (matchesFound == currentCards.length/2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => WonGameScreen(userName: savedUserName)),
+      );
+    }
+  }
+
+
   void restartGame() {
     setupGame();
+    showLoginModal();
   }
+
+  void showLoginModal() {
+    showModalBottomSheet(context: context,
+        builder: (BuildContext context){
+      return Container(     padding: EdgeInsets.all(16),
+        height: 200,
+      child:
+          Column(children: [
+            Expanded( child:
+            TextField(
+                controller: textController,
+                textAlign: TextAlign.justify,
+                decoration: InputDecoration(
+                  icon: Icon(Icons.account_box),
+                  hintText: 'Your Name Here',
+                  helperText: 'Name',
+                  border: OutlineInputBorder(),
+                )
+            ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                String name = textController.text;
+                savedUserName=name;
+                print('saved user name: $name');
+                Navigator.pop(context);
+              },
+              child: Text('Save'),
+            )],
+
+
+        ));
+
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blue[100],
       appBar: AppBar(
-        title: const Text('Rivas Memory Game'),
+        title: const Text('Riva\'s Memory Game'),
         titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20),
         backgroundColor: Colors.pink[300],
         actions: [
@@ -127,7 +199,8 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
           ),
         ],
       ),
-      body: Column(
+      body:
+      Column(
         children: [
           const SizedBox(height: 10),
           const Text("Select Difficulty", style: TextStyle(fontSize: 18)),
@@ -148,7 +221,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                 ),
-                itemCount: gameImages.length,
+                itemCount: currentCards.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () => flipCard(index),
@@ -156,7 +229,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
                       borderRadius: BorderRadius.circular(10),
                       child: flippedCards[index]
                           ? Image.asset(
-                        gameImages[index],
+                        currentCards[index],
                         fit: BoxFit.cover,
                       )
                           : const MemoryCard(),
@@ -167,7 +240,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
             ),
           ),
           BottomAppBar(
-            color: Colors.white,
+            color: Colors.blue,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Row(
@@ -175,18 +248,20 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
                 children: [
                   Text(
                     "Matches Found: $matchesFound",
-                    style: const TextStyle(fontSize: 18, color: Colors.pink),
+                    style: const TextStyle(fontSize: 18, color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
-                 Spacer(),
+                  Spacer(),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) =>  CatPhotos()),
+                        MaterialPageRoute(builder: (context) => CatPhotos()),
                       );
                     },
                     child: const Text("Cat Photos"),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.pink,
+                    foregroundColor: Colors.white),
                   ),
                 ],
               ),
