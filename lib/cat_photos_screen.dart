@@ -67,7 +67,7 @@ class _CatPhotosState extends State<CatPhotos> {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.pink,
-                foregroundColor: Colors.white
+                foregroundColor: Colors.white,
               ),
               child: Text('Memory Game'),
             ),

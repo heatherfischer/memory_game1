@@ -25,7 +25,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
     "assets/images/sunglasses.jpeg",
     "assets/images/superman.jpg",
     "assets/images/sweater.jpg",
-    "assets/images/witch.jpg"
+    "assets/images/witch.jpg",
   ];
 
   List<String> currentCards = [];
@@ -36,8 +36,6 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
   int _difficulty = 1; // Default: Medium
   int _gridSize = 4; // Default grid size
-
-
 
   late TextEditingController textController;
   String savedUserName = '';
@@ -75,15 +73,15 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
     textController = TextEditingController();
     super.initState();
     setupGame();
-
-
   }
 
   void setupGame() {
-    int numPairs = (_gridSize * _gridSize) ~/
-        2; // Adjust pairs to match grid size
+    int numPairs =
+        (_gridSize * _gridSize) ~/ 2; // Adjust pairs to match grid size
     List<String> selectedImages = imagePaths.sublist(
-        0, numPairs); // Limit images
+      0,
+      numPairs,
+    ); // Limit images
     currentCards = [...selectedImages, ...selectedImages]; // Create pairs
     currentCards.shuffle(Random());
 
@@ -133,14 +131,15 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
   }
 
   void checkForWin() {
-    if (matchesFound == currentCards.length/2) {
+    if (matchesFound == currentCards.length / 2) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => WonGameScreen(userName: savedUserName)),
+        MaterialPageRoute(
+          builder: (context) => WonGameScreen(userName: savedUserName),
+        ),
       );
     }
   }
-
 
   void restartGame() {
     setupGame();
@@ -148,40 +147,41 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
   }
 
   void showLoginModal() {
-    showModalBottomSheet(context: context,
-        builder: (BuildContext context){
-      return Container(     padding: EdgeInsets.all(16),
-        height: 200,
-      child:
-          Column(children: [
-            Expanded( child:
-            TextField(
-                controller: textController,
-                textAlign: TextAlign.justify,
-                decoration: InputDecoration(
-                  icon: Icon(Icons.account_box),
-                  hintText: 'Your Name Here',
-                  helperText: 'Name',
-                  border: OutlineInputBorder(),
-                )
-            ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                String name = textController.text;
-                savedUserName=name;
-                print('saved user name: $name');
-                Navigator.pop(context);
-              },
-              child: Text('Save'),
-            )],
-
-
-        ));
-
-    });
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.all(16),
+          height: 200,
+          child: Column(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: textController,
+                  textAlign: TextAlign.justify,
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.account_box),
+                    hintText: 'Your Name Here',
+                    helperText: 'Name',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  String name = textController.text;
+                  savedUserName = name;
+                  print('saved user name: $name');
+                  Navigator.pop(context);
+                },
+                child: Text('Save'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -199,8 +199,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
           ),
         ],
       ),
-      body:
-      Column(
+      body: Column(
         children: [
           const SizedBox(height: 10),
           const Text("Select Difficulty", style: TextStyle(fontSize: 18)),
@@ -227,12 +226,13 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
                     onTap: () => flipCard(index),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: flippedCards[index]
-                          ? Image.asset(
-                        currentCards[index],
-                        fit: BoxFit.cover,
-                      )
-                          : const MemoryCard(),
+                      child:
+                          flippedCards[index]
+                              ? Image.asset(
+                                currentCards[index],
+                                fit: BoxFit.cover,
+                              )
+                              : const MemoryCard(),
                     ),
                   );
                 },
@@ -260,8 +260,10 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
                       );
                     },
                     child: const Text("Cat Photos"),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.pink,
-                    foregroundColor: Colors.white),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.pink,
+                      foregroundColor: Colors.white,
+                    ),
                   ),
                 ],
               ),
@@ -282,10 +284,7 @@ class MemoryCard extends StatelessWidget {
     return Container(
       color: Colors.blue,
       child: const Center(
-        child: Text(
-          "Tap to flip",
-          style: TextStyle(color: Colors.white),
-        ),
+        child: Text("Tap to flip", style: TextStyle(color: Colors.white)),
       ),
     );
   }
