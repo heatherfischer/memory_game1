@@ -64,7 +64,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
   void initState() {
     super.initState();
 
-    // Wait until the first frame is rendered before showing the modal
+    // Wait until the first frame is rendered before showing login modal
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showLoginModal();
     });
@@ -77,12 +77,12 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
   void setupGame() {
     int numPairs =
-        (_gridSize * _gridSize) ~/ 2; // Adjust pairs to match grid size
+        (_gridSize * _gridSize) ~/ 2;
     List<String> selectedImages = imagePaths.sublist(
       0,
       numPairs,
-    ); // Limit images
-    currentCards = [...selectedImages, ...selectedImages]; // Create pairs
+    );
+    currentCards = [...selectedImages, ...selectedImages];
     currentCards.shuffle(Random());
 
     setState(() {
